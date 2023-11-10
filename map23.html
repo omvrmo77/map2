@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="map23.css">
+</head>
+<body>
+  <div id="map"></div>
+  <div class="bottom-inputs">
+    <div class="prompt-input">
+      <label for="latitude">Latitude:</label>
+      <input type="text" id="latitude" placeholder="Enter latitude" />
+    </div>
+
+    <div class="prompt-input">
+      <label for="longitude">Longitude:</label>
+      <input type="text" id="longitude" placeholder="Enter longitude" />
+    </div>
+    <div class="prompt-inputt">
+     <label for="address">address:</label>
+     <input type="text" id="address" placeholder="Enter address" />
+    </div>
+  </div>
+  <div class="submit-btn">
+    <button class="submit-btnn" onclick="addMarker()">Show on Map</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      maxZoom: 18,
+    }).addTo(map);
+
+    function addMarker() {
+      var latitude = document.getElementById("latitude").value;
+      var longitude = document.getElementById("longitude").value;
+      var address = document.getElementById("address").value;
+
+      if (address) {
+    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + address)
+      .then(function(response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Unable to retrieve latitude and longitude for the address.');
+        }
+      })
+      .then(function(data) {
+        if (data.length > 0) {
+          var lat = data[0].lat;
+          var lon = data[0].lon;
+          L.marker([lat, lon]).addTo(map);
+        } else {
+          throw new Error('No results found for the address.');
+        }
+      })
+      .catch(function(error) {
+        console.error(error);
+        // Display error message to the user
+      });
+  }
+      marker.bindPopup(address).openPopup();
+  }
+    
+  </script>
+
+   
